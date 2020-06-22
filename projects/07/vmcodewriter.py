@@ -92,16 +92,16 @@ class CodeWriter:
         cmds = ''
 
         if segment == 'argument':
+            cmds += '@ARG\nD=M\n'
             cmds += '@' + str(index) + '\n'
-            cmds += 'D=A\n@ARG\nM=M+D\n@SP\nAM=M-1\nD=M\n@ARG\nA=M\nM=D\n'
-            cmds += '@' + str(index) + '\n'
-            cmds += 'D=A\n@ARG\nM=M-D\n'
+            cmds += 'D=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n'
+            #R13をアドレスの一時格納用に使用
 
         elif segment == 'local':
+            cmds += '@LCL\nD=M\n'
             cmds += '@' + str(index) + '\n'
-            cmds += 'D=A\n@LCL\nM=M+D\n@SP\nAM=M-1\nD=M\n@LCL\nA=M\nM=D\n'
-            cmds += '@' + str(index) + '\n'
-            cmds += 'D=A\n@LCL\nM=M-D\n'
+            cmds += 'D=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n'
+            #R13をアドレスの一時格納用に使用
 
         elif segment == 'static':
             cmds += '@SP\nAM=M-1\nD=M\n'
@@ -109,16 +109,16 @@ class CodeWriter:
             cmds += 'M=D\n'
 
         elif segment == 'this':
+            cmds += '@THIS\nD=M\n'
             cmds += '@' + str(index) + '\n'
-            cmds += 'D=A\n@THIS\nM=M+D\n@SP\nAM=M-1\nD=M\n@THIS\nA=M\nM=D\n'
-            cmds += '@' + str(index) + '\n'
-            cmds += 'D=A\n@THIS\nM=M-D\n'
+            cmds += 'D=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n'
+            #R13をアドレスの一時格納用に使用
 
         elif segment == 'that':
+            cmds += '@THAT\nD=M\n'
             cmds += '@' + str(index) + '\n'
-            cmds += 'D=A\n@THAT\nM=M+D\n@SP\nAM=M-1\nD=M\n@THAT\nA=M\nM=D\n'
-            cmds += '@' + str(index) + '\n'
-            cmds += 'D=A\n@THAT\nM=M-D\n'
+            cmds += 'D=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n'
+            #R13をアドレスの一時格納用に使用
 
         elif segment == 'pointer':
             cmds += '@SP\nAM=M-1\nD=M\n'

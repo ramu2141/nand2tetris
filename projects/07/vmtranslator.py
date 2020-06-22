@@ -11,7 +11,7 @@ def main():
     # vmファイルが単一の場合
     if os.path.isfile(vmpath) and vmpath[-3:] == '.vm':
         vmfiles.append(vmpath)
-        asmfile = vmpath[-2:] + 'asm'
+        asmfile = vmpath[:-2] + 'asm'
     # vmファイルが複数の場合(ディレクトリー指定の場合)
     elif os.path.isdir(vmpath) and vmpath[-1] == '/':
         vmdir = os.path.dirname(vmpath)
@@ -19,7 +19,7 @@ def main():
         asmfile = vmpath + vmpath[vmpath.rfind('/', 0, -1)+1:-1] + '.asm'
     else:
         return None
-    
+
     convert(vmfiles, asmfile)
 
 
