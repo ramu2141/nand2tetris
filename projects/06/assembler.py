@@ -39,36 +39,23 @@ def main():
         
         if parser.command_type() == 'A_COMMAND':
 
-            # アドレスの場合
             if parser.symbol()[0].isdigit():    
-                hackf.write('0'
-                            + '{:015b}'.format(int(parser.symbol()))
-                            + '\n'
-                            )
-            # シンボルの場合
+                # アドレスの場合
+                hackf.write(f'0{int(parser.symbol()):015b}\n')
             else:
-                # シンボル登録済みの場合
+                # シンボルの場合
                 if symtbl.contains(parser.symbol()):
-                    hackf.write('0' 
-                                + '{:015b}'.format(symtbl.get_address(parser.symbol()))
-                                + '\n'
-                                )
-                # シンボル未登録の場合
+                    # シンボル登録済みの場合
+                    hackf.write(f'0{symtbl.get_address(parser.symbol()):015b}\n')
                 else:
+                    # シンボル未登録の場合
                     symtbl.add_entry(parser.symbol(), new_sym_address)
-                    hackf.write('0' 
-                                + '{:015b}'.format(new_sym_address)
-                                + '\n'
-                                )
+                    hackf.write(f'0{new_sym_address:015b}\n')
                     new_sym_address += 1
 
         elif parser.command_type() == 'C_COMMAND':
-            hackf.write('111'
-                        + cd.comp(parser.comp())
-                        + cd.dest(parser.dest())
-                        + cd.jump(parser.jump())
-                        + '\n'
-                        )
+            hackf.write(f'111{cd.comp(parser.comp())}'
+                + f'{cd.dest(parser.dest())}{cd.jump(parser.jump())}\n')
         
         elif parser.command_type() == 'L_COMMAND':
             # 出力なし
