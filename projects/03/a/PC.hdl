@@ -23,6 +23,6 @@ CHIP PC {
     Mux16(a=mux1out, b=mux2out, sel=mux3sel, out=defin);
     Or(a=load, b=reset, out=mux3sel);
 
-    DEF16(in=defin, out=out, out=incin);
+    DFF16(in=defin, out=out, out=incin);
     Inc16(in=incin, out=incout);
 }

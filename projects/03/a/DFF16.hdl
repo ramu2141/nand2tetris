@@ -1,4 +1,4 @@
-CHIP DEF16 {
+CHIP DFF16 {
     IN in[16];
     OUT out[16];
 
