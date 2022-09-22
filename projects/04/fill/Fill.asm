@@ -13,60 +13,70 @@
 
 // Put your code here.
 
-(LOOP)
-// R0=16384
+
+// r0 = SCREEN
+//
+// LOOP:
+//     if *KBD == 0 goto WHITE
+//         // BLACK:
+//             *r0 = !0
+//             goto COMMON
+//         WHITE:
+//             *r0 = 0
+//         COMMON:
+//             r0 = r0 + 1
+//             if r0 - SCREEN - 8192 < 0 goto LOOP
+//                 r0 = SCREEN
+//                 goto LOOP
+
+// r0 = SCREEN
 @SCREEN
 D=A
 @R0
 M=D
 
-@KBD
-D=M
-@FILLBK
-D;JNE
-@FILLWT
-0;JMP
-
-(FILLBK)
-    // if R0-24575>0: goto LOOP2
-    @R0
+(LOOP)
+    // if *KBD = 0 goto WHITE
+    @KBD
     D=M
-    @24575
-    D=D-A
-    @LOOP
-    D;JGT
+    @WHITE
+    D;JEQ
 
-    // MEM[R0]=0b1111111111111111
-    D=0
-    @R0
-    A=M
-    M=!D
+    // BLACK
+        // *r0 = !0
+        @R0
+        A=M
+        D=0
+        M=!D
+        // goto COMMON
+        @COMMON
+        0;JMP
 
-    // R0 = R0+1
-    @R0
-    M=M+1
+    (WHITE)
+        // *r0 = 0
+        @R0
+        A=M
+        M=0
+        
+    (COMMON)
+        // r0 = r0 + 1
+        @R0
+        MD=M+1
+    
+        // if r0 - SCREEN - 8192 < 0 goto (LOOP)
+        @SCREEN
+        D=D-A
+        @8192
+        D=D-A
+        @LOOP
+        D;JLT
 
-@FILLBK
-0;JMP
-
-
-(FILLWT)
-    // if R0-24575>0: goto LOOP2
-    @R0
-    D=M
-    @24575
-    D=D-A
-    @LOOP
-    D;JGT
-
-    // MEM[R0]=0b0000000000000000
-    @R0
-    A=M
-    M=0
-
-    // R0 = R0+1
-    @R0
-    M=M+1
-
-@FILLWT
-0;JMP
+        // r0 = SCREEN
+        @SCREEN
+        D=A
+        @R0
+        M=D
+        
+        // goto LOOP
+        @LOOP
+        0;JMP
