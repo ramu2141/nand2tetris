@@ -1,6 +1,3 @@
-from cProfile import label
-
-
 class CodeWriter:
     def __init__(self, asmfile):
         self.asmf = open(asmfile, 'w')
