@@ -111,54 +111,47 @@ class CompilationEngine():
         # varName: identifier
 
         # ('static | 'field')
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('static', 'field'):
+        while self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('static', 'field'):
             self.xmlf.write('<classVarDec>\n')
             self.write_token_xml()
             self.advance()
-        else:
-            return None
 
-        # type
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('int', 'char', 'boolean'):
-            self.write_token_xml()
-            self.advance()
-        elif self.jt.token_type() == 'IDENTIFIER':
-            self.write_token_xml()
-            self.advance()
-        else:
-            raise CompileError('ClassVarDec Error 1')
+            # type
+            if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('int', 'char', 'boolean'):
+                self.write_token_xml()
+                self.advance()
+            elif self.jt.token_type() == 'IDENTIFIER':
+                self.write_token_xml()
+                self.advance()
+            else:
+                raise CompileError('ClassVarDec Error 1')
 
-        # varName
-        if self.jt.token_type() == 'IDENTIFIER':
-            self.write_token_xml()
-            self.advance()
-        else:
-            raise CompileError('ClassVarDec Error 2')
-
-        # (',' varName)*
-        while self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == ',':
-            # ','
-            self.write_token_xml()
-            self.advance()
-            
             # varName
             if self.jt.token_type() == 'IDENTIFIER':
                 self.write_token_xml()
                 self.advance()
             else:
-                raise CompileError('ClassVarDec Error 3')
+                raise CompileError('ClassVarDec Error 2')
 
-        # ';'
-        self.check_symbol(';', 'ClassVarDec Error 4')
+            # (',' varName)*
+            while self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == ',':
+                # ','
+                self.write_token_xml()
+                self.advance()
+                
+                # varName
+                if self.jt.token_type() == 'IDENTIFIER':
+                    self.write_token_xml()
+                    self.advance()
+                else:
+                    raise CompileError('ClassVarDec Error 3')
 
-        self.xmlf.write('</classVarDec>\n')
+            # ';'
+            self.check_symbol(';', 'ClassVarDec Error 4')
 
-        # classVarDec* の*部分
-        # もし次もclassVarDecの場合、本メソッドを再帰呼び出しをする。
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('static', 'field'):
-            self.compile_class_var_dec()
-        else:
-            return None
+            self.xmlf.write('</classVarDec>\n')
+
+        return None
 
     def compile_subroutine(self):
         # subroutineDec: ('constructor' | 'function' | 'method') ('void' | type) subroutineName
@@ -167,65 +160,58 @@ class CompilationEngine():
         # subroutineBody: '{' varDec* statements '}'
 
         # ('constructor' | 'function' | 'method')
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('constructor', 'function', 'method'):
+        while self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('constructor', 'function', 'method'):
             self.xmlf.write('<subroutineDec>\n')
             self.write_token_xml()
             self.advance()
-        else:
-            return None
 
-        # ('void' | type)
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('void', 'int', 'char', 'boolean'):
-            # void | type(className除く)
-            self.write_token_xml()
-            self.advance()
-        elif self.jt.token_type() == 'IDENTIFIER':
-            # className
-            self.write_token_xml()
-            self.advance()
-        else:
-            raise CompileError('SubroutineDec Error 1')
+            # ('void' | type)
+            if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('void', 'int', 'char', 'boolean'):
+                # void | type(className除く)
+                self.write_token_xml()
+                self.advance()
+            elif self.jt.token_type() == 'IDENTIFIER':
+                # className
+                self.write_token_xml()
+                self.advance()
+            else:
+                raise CompileError('SubroutineDec Error 1')
 
-        # subroutineName
-        if self.jt.token_type() == 'IDENTIFIER':
-            self.write_token_xml()
-            self.advance()
-        else:
-            raise CompileError('SubroutineDec Error 2')
+            # subroutineName
+            if self.jt.token_type() == 'IDENTIFIER':
+                self.write_token_xml()
+                self.advance()
+            else:
+                raise CompileError('SubroutineDec Error 2')
 
-        # '('
-        self.check_symbol('(', 'SubroutineDec Error 3')
+            # '('
+            self.check_symbol('(', 'SubroutineDec Error 3')
 
-        # parameterList
-        self.compile_parameter_list()
+            # parameterList
+            self.compile_parameter_list()
 
-        # ')'
-        self.check_symbol(')', 'SubroutineDec Error 4')
+            # ')'
+            self.check_symbol(')', 'SubroutineDec Error 4')
 
-        # subroutineBody
-        self.xmlf.write('<subroutineBody>\n')
+            # subroutineBody
+            self.xmlf.write('<subroutineBody>\n')
 
-        # '{'
-        self.check_symbol('{', 'SubroutineDec Error 5')
+            # '{'
+            self.check_symbol('{', 'SubroutineDec Error 5')
 
-        # varDec*
-        self.compile_var_dec()
+            # varDec*
+            self.compile_var_dec()
 
-        # statements
-        self.compile_statements()
+            # statements
+            self.compile_statements()
 
-        # '}'
-        self.check_symbol('}', 'SubroutineDec Error 6')
+            # '}'
+            self.check_symbol('}', 'SubroutineDec Error 6')
 
-        self.xmlf.write('</subroutineBody>\n')
-        self.xmlf.write('</subroutineDec>\n')
+            self.xmlf.write('</subroutineBody>\n')
+            self.xmlf.write('</subroutineDec>\n')
 
-        # subroutineDec* の*部分
-        # もし次もsubroutineDecの場合、本メソッドを再帰呼び出しをする。
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('constructor', 'function', 'method'):
-            self.compile_subroutine()
-        else:
-            return None
+        return None
 
     def compile_parameter_list(self):
         # parameterList: ((type varName) (',' type varName)*)?
@@ -280,56 +266,47 @@ class CompilationEngine():
     def compile_var_dec(self):
         #varDec: 'var' type varName(',' varName)* ';'
 
-        # 'var'
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'var':
+        while self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'var':
             self.xmlf.write('<varDec>\n')
             self.write_token_xml()
             self.advance()
-        else:
-            # varDecがない場合
-            return None
 
-        # type
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('int', 'char', 'boolean'):
-            self.write_token_xml()
-            self.advance()
-        elif self.jt.token_type() == 'IDENTIFIER':
-            self.write_token_xml()
-            self.advance()
-        else:
-            raise CompileError('VarDec Error 1')
+            # type
+            if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('int', 'char', 'boolean'):
+                self.write_token_xml()
+                self.advance()
+            elif self.jt.token_type() == 'IDENTIFIER':
+                self.write_token_xml()
+                self.advance()
+            else:
+                raise CompileError('VarDec Error 1')
 
-        # varName
-        if self.jt.token_type() == 'IDENTIFIER':
-            self.write_token_xml()
-            self.advance()
-        else:
-            raise CompileError('VarDec Error 2')
-
-        # (',' varName)*
-        while self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == ',':
-            # ','
-            self.write_token_xml()
-            self.advance()
-            
             # varName
             if self.jt.token_type() == 'IDENTIFIER':
                 self.write_token_xml()
                 self.advance()
             else:
-                raise CompileError('VarDec Error 3')
-    
-        # ';'
-        self.check_symbol(';', 'VarDec Error 4')
+                raise CompileError('VarDec Error 2')
 
-        self.xmlf.write('</varDec>\n')
+            # (',' varName)*
+            while self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == ',':
+                # ','
+                self.write_token_xml()
+                self.advance()
+                
+                # varName
+                if self.jt.token_type() == 'IDENTIFIER':
+                    self.write_token_xml()
+                    self.advance()
+                else:
+                    raise CompileError('VarDec Error 3')
+        
+            # ';'
+            self.check_symbol(';', 'VarDec Error 4')
 
-        # varDec* の*部分
-        # もし次もvarDecの場合、本メソッドを再帰呼び出しをする。
-        if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'var':
-            self.compile_var_dec()
-        else:
-            return None
+            self.xmlf.write('</varDec>\n')
+
+        return None
 
     def compile_statements(self):
         # statements: statement*
@@ -370,7 +347,7 @@ class CompilationEngine():
             raise CompileError('DoStatement Error 1')
         
         if self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == '(':
-            # 前のトークンがsubroutineNameの場合、'('となる
+            # subroutineName '(' expressionList ')' の場合
 
             # '('
             self.write_token_xml()
@@ -383,7 +360,7 @@ class CompilationEngine():
             self.check_symbol(')', 'DoStatement Error 2')
 
         elif self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == '.':
-            # 前のトークンがclassNameまたはvarNameの場合、'.'となる
+            # (className | varName) '.' subroutineName '(' expressionList ')' の場合
             self.write_token_xml()
             self.advance()
 
