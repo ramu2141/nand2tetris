@@ -66,9 +66,9 @@ class CompilationEngine():
 
         if self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == symbol:
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError(err_msg)
-        self.advance()
         return None
 
     def compile_class(self):
@@ -79,16 +79,16 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'class':
             self.xmlf.write('<class>\n')
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('Class Error 1')
-        self.advance()
 
         # className
         if self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('Class Error 2')
-        self.advance()
 
         # '{'
         self.check_symbol('{', 'Class Error 3')
@@ -114,25 +114,26 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('static', 'field'):
             self.xmlf.write('<classVarDec>\n')
             self.write_token_xml()
+            self.advance()
         else:
             return None
-        self.advance()
 
         # type
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('int', 'char', 'boolean'):
             self.write_token_xml()
+            self.advance()
         elif self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('ClassVarDec Error 1')
-        self.advance()
 
         # varName
         if self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('ClassVarDec Error 2')
-        self.advance()
 
         # (',' varName)*
         while self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == ',':
@@ -143,9 +144,9 @@ class CompilationEngine():
             # varName
             if self.jt.token_type() == 'IDENTIFIER':
                 self.write_token_xml()
+                self.advance()
             else:
                 raise CompileError('ClassVarDec Error 3')
-            self.advance()
 
         # ';'
         self.check_symbol(';', 'ClassVarDec Error 4')
@@ -169,27 +170,28 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('constructor', 'function', 'method'):
             self.xmlf.write('<subroutineDec>\n')
             self.write_token_xml()
+            self.advance()
         else:
             return None
-        self.advance()
 
         # ('void' | type)
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('void', 'int', 'char', 'boolean'):
             # void | type(className除く)
             self.write_token_xml()
+            self.advance()
         elif self.jt.token_type() == 'IDENTIFIER':
             # className
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('SubroutineDec Error 1')
-        self.advance()
 
         # subroutineName
         if self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('SubroutineDec Error 2')
-        self.advance()
 
         # '('
         self.check_symbol('(', 'SubroutineDec Error 3')
@@ -233,20 +235,21 @@ class CompilationEngine():
         # type
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('int', 'char', 'boolean'):
             self.write_token_xml()
+            self.advance()
         elif self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             # (...)? parameterListの中身がない場合
             self.xmlf.write('</parameterList>\n')
             return None
-        self.advance()
 
         # varName
         if self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('ParameterList Error 1')
-        self.advance()
 
         # (',' type varName)*
         while self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == ',':
@@ -257,18 +260,19 @@ class CompilationEngine():
             # type
             if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('int', 'char', 'boolean'):
                 self.write_token_xml()
+                self.advance()
             elif self.jt.token_type() == 'IDENTIFIER':
                 self.write_token_xml()
+                self.advance()
             else:
                 raise CompileError('ParameterList Error 2')
-            self.advance()
 
             # varName
             if self.jt.token_type() == 'IDENTIFIER':
                 self.write_token_xml()
+                self.advance()
             else:
                 raise CompileError('ParameterList Error 3')
-            self.advance()
 
         self.xmlf.write('</parameterList>\n')
         return None
@@ -280,26 +284,27 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'var':
             self.xmlf.write('<varDec>\n')
             self.write_token_xml()
+            self.advance()
         else:
             # varDecがない場合
             return None
-        self.advance()
 
         # type
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('int', 'char', 'boolean'):
             self.write_token_xml()
+            self.advance()
         elif self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
-            raise CompileError('VarDec Error 1')      
-        self.advance()
+            raise CompileError('VarDec Error 1')
 
         # varName
         if self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('VarDec Error 2')
-        self.advance()
 
         # (',' varName)*
         while self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == ',':
@@ -310,9 +315,9 @@ class CompilationEngine():
             # varName
             if self.jt.token_type() == 'IDENTIFIER':
                 self.write_token_xml()
+                self.advance()
             else:
                 raise CompileError('VarDec Error 3')
-            self.advance()
     
         # ';'
         self.check_symbol(';', 'VarDec Error 4')
@@ -352,21 +357,22 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'do':
             self.xmlf.write('<doStatement>\n')
             self.write_token_xml()
+            self.advance()
         else:
             return None
-        self.advance()
         
         # subroutineCall
         # subroutineName | className | varName
         if self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('DoStatement Error 1')
-        self.advance()
         
         if self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == '(':
             # 前のトークンがsubroutineNameの場合、'('となる
 
+            # '('
             self.write_token_xml()
             self.advance()
 
@@ -384,9 +390,9 @@ class CompilationEngine():
             # subroutineName
             if self.jt.token_type() == 'IDENTIFIER':
                 self.write_token_xml()
+                self.advance()
             else:
                 raise CompileError('DoStatement Error 3')
-            self.advance()
             
             # '('
             self.check_symbol('(', 'DoStatement Error 4')
@@ -413,16 +419,16 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'let':
             self.xmlf.write('<letStatement>\n')
             self.write_token_xml()
+            self.advance()
         else:
             return None
-        self.advance()
 
         # varName
         if self.jt.token_type() == 'IDENTIFIER':
             self.write_token_xml()
+            self.advance()
         else:
             raise CompileError('LetStatement Error 1')
-        self.advance()
 
         # ('['expression']')?
         if self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == '[':
@@ -457,9 +463,9 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'while':
             self.xmlf.write('<whileStatement>\n')
             self.write_token_xml()
+            self.advance()
         else:
             return None
-        self.advance()
 
         # '('
         self.check_symbol('(', 'WhileStatement Error 1')
@@ -489,9 +495,9 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'return':
             self.xmlf.write('<returnStatement>\n')
             self.write_token_xml()
+            self.advance()
         else:
             return None
-        self.advance()
 
         # ';' (expressionなしの場合)
         if self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == ';':
@@ -517,9 +523,9 @@ class CompilationEngine():
         if self.jt.token_type() == 'KEYWORD' and self.jt.keyword() == 'if':
             self.xmlf.write('<ifStatement>\n')
             self.write_token_xml()
+            self.advance()
         else:
             return None
-        self.advance()
 
         # '('
         self.check_symbol('(', 'IfStatement Error 1')
@@ -598,21 +604,20 @@ class CompilationEngine():
         keywordConstant: 'true'| 'false' | 'null' | 'this'
         '''
 
+        self.xmlf.write('<term>\n')
+
         if self.jt.token_type() == 'INT_CONST':
             # integerConstant
-            self.xmlf.write('<term>\n')
             self.write_token_xml()
             self.advance()
             
         elif self.jt.token_type() == 'STRING_CONST':
             # stringConstant
-            self.xmlf.write('<term>\n')
             self.write_token_xml()
             self.advance()
 
         elif self.jt.token_type() == 'KEYWORD' and self.jt.keyword() in ('true', 'false', 'null', 'this'):
             # keywordConstant
-            self.xmlf.write('<term>\n')
             self.write_token_xml()
             self.advance()
 
@@ -620,12 +625,11 @@ class CompilationEngine():
             # varName | subroutineCallのsubroutineName
             # | subroutineCallのclassName | subroutineCallのvarName
 
-            self.xmlf.write('<term>\n')
             self.write_token_xml()
             self.advance()
 
             if self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == '[':
-                # 前のトークンがvarName(配列)の場合
+                # varName '[' expression ']' の場合
 
                 # '['
                 self.write_token_xml()
@@ -638,7 +642,7 @@ class CompilationEngine():
                 self.check_symbol(']', 'Term Error 1')
 
             elif self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == '(':
-                # 前のトークンがsubroutineCallのsubroutineNameの場合
+                # subroutineName '(' expressionList ')' の場合
 
                 # '('
                 self.write_token_xml()
@@ -651,7 +655,7 @@ class CompilationEngine():
                 self.check_symbol(')', 'Term Error 2')
 
             elif self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == '.':
-                # 前のトークンがsubroutineCallの(className | varName)の場合
+                # (className | varName) '.' subroutineName '(' expressionList ')'の場合
 
                 # '.'
                 self.write_token_xml()
@@ -674,14 +678,13 @@ class CompilationEngine():
                 self.check_symbol(')', 'Term Error 5')
 
             else:
-                # 前のトークンがvarName(配列でない)の場合
+                # varName(配列でない)の場合
                 pass
 
         elif self.jt.token_type() == 'SYMBOL' and self.jt.symbol() == '(':
             # '(' expression ')'
 
             # '('
-            self.xmlf.write('<term>\n')
             self.write_token_xml()
             self.advance()
 
@@ -695,7 +698,6 @@ class CompilationEngine():
             # unaryOp term
 
             # unaryOp
-            self.xmlf.write('<term>\n')
             self.write_token_xml()
             self.advance()
 
